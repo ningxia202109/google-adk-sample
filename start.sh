@@ -26,6 +26,12 @@ trap cleanup SIGINT
 cd src
 # Start adk web on port 8000
 echo "Starting adk web on port 8000..."
+
+# Kill any existing process on port 8000 before starting
+echo "Checking for existing processes on port 8000..."
+lsof -ti:8000 | xargs kill -9 2>/dev/null || true
+sleep 1
+
 adk web --port 8000 &
 PID=$!
 
