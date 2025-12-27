@@ -2,6 +2,11 @@
 
 . .venv/bin/activate
 
+# Function to kill processes on port 8000
+kill_port_8000() {
+    lsof -ti:8000 | xargs kill -9 2>/dev/null || true
+}
+
 # Function to handle Ctrl+C
 cleanup() {
     echo ""
@@ -13,7 +18,7 @@ cleanup() {
     fi
     
     # Kill any process using port 8000
-    lsof -ti:8000 | xargs kill -9 2>/dev/null || true
+    kill_port_8000
     
     cd ..
     echo "Cleanup complete"
@@ -29,7 +34,7 @@ echo "Starting adk web on port 8000..."
 
 # Kill any existing process on port 8000 before starting
 echo "Checking for existing processes on port 8000..."
-lsof -ti:8000 | xargs kill -9 2>/dev/null || true
+kill_port_8000
 sleep 1
 
 adk web --port 8000 &

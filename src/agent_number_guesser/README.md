@@ -74,5 +74,6 @@ When a user says "play", the agent enters a **ReAct loop**:
 
 1. Start the ADK web server: `./start.sh`
 2. Access: `http://127.0.0.1:8000`
-3. Type "play" to start the game
-4. Watch the agent think, act, observe, and rethink!
+3. Select `agent_number_guesser` from the agent list
+4. Type "play" to start the game
+5. Watch the agent think, act, observe, and rethink!
