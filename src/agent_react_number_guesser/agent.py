@@ -1,12 +1,11 @@
 from google.adk.agents import LlmAgent
 
 from agent_react_number_guesser.guess_number import guess_number
-
-MODEL = "gemini-2.5-flash"
+from common.ai_model import GEMINI_MODEL
 
 agent_react_number_guesser = LlmAgent(
     name="NumberGuesser",
-    model=MODEL,
+    model=GEMINI_MODEL,
     description="You are an agent that guesses a number between 1 and 100 based on user hints.",
     instruction="""
 When the user says 'play', start the number guessing game.
