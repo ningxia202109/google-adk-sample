@@ -4,3 +4,6 @@ When debugging or running python code, always activate the virtual environment f
 When creating or modifying Python files, use ruff for checking and formatting:
 uv run ruff format <file_path>
 uv run ruff check --fix <file_path>
+
+To run the web application, execute the start script:
+./start.sh
