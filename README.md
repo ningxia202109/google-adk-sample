@@ -16,10 +16,26 @@ A proof-of-concept **ReAct (Reasoning + Acting)** agent that demonstrates the co
 
 The agent plays a number guessing game where it reasons about the target number, makes guesses using the `guess_number` tool, observes the feedback, and refines its strategy accordingly.
 
-**Location**: `src/agent_number_guesser/`  
-**Quick Start**: See [Agent README](src/agent_number_guesser/README.md) for detailed instructions.
+**Location**: `src/agent_react_number_guesser/`  
+**Quick Start**: See [Agent README](src/agent_react_number_guesser/README.md) for detailed instructions.
 
 ## Setup
+
+### Environment Configuration
+
+Set up your Google API key:
+
+```bash
+export GOOGLE_API_KEY=your_api_key_here
+```
+
+Or create a `.env` file in the project root:
+
+```
+GOOGLE_API_KEY=your_api_key_here
+```
+
+### Installation and Running
 
 ```bash
 uv sync

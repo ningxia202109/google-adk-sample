@@ -1,10 +1,10 @@
 from google.adk.agents import LlmAgent
 
-from agent_number_guesser.guess_number import guess_number
+from agent_react_number_guesser.guess_number import guess_number
 
-MODEL = "gemini-3-flash-preview"
+MODEL = "gemini-2.5-flash"
 
-agent_number_guesser = LlmAgent(
+agent_react_number_guesser = LlmAgent(
     name="NumberGuesser",
     model=MODEL,
     description="You are an agent that guesses a number between 1 and 100 based on user hints.",
@@ -18,4 +18,4 @@ verify until they guess the correct number.
 """,
     tools=[guess_number],
 )
-root_agent = agent_number_guesser
+root_agent = agent_react_number_guesser
