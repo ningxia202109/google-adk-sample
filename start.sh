@@ -37,7 +37,7 @@ echo "Checking for existing processes on port 8000..."
 kill_port_8000
 sleep 1
 
-adk web --port 8000 &
+adk web --port 8000 --reload --reload_agents &
 PID=$!
 
 # Wait for the process
