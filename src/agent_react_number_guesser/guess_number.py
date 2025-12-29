@@ -1,5 +1,3 @@
-import random
-
 CORE_NUMBER = 88  # random.randint(1, 100)
 
 print(f"Core number is: {CORE_NUMBER}")
