@@ -4,7 +4,10 @@ from google.genai.types import GenerateContentConfig
 from google.adk.agents.context_cache_config import ContextCacheConfig
 
 from common.ai_model import GEMINI_MODEL
-from common.tools import retrieve_service_documentation, execute_api_request
+from common.dummy_service_tools import (
+    retrieve_service_documentation,
+    execute_api_request,
+)
 
 
 agent_planner = LlmAgent(

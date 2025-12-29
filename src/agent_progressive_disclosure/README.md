@@ -40,7 +40,7 @@ graph TD
 ## Tech Stack
 - **Framework**: [Google ADK](https://github.com/google/adk)
 - **Model**: Gemini (configured via `common/ai_model.py`)
-- **Tools**: Atomic Python functions for HTTP/JSON interaction located in `src/common/tools.py`.
+- **Tools**: Atomic Python functions for HTTP/JSON interaction with the `dummy-fastapi-service` located in `src/common/dummy_service_tools.py`.
 - **Logic**: Iterative looping with state passing between Planner and Executor.
 
 ## Validation Logic
