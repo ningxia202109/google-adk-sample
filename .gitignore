@@ -210,3 +210,6 @@ __marimo__/
 # ADK Sessions data
 session.db
 
+# Temporary files
+**temp*
+
