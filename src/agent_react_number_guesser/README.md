@@ -6,45 +6,15 @@ The NumberGuesser Agent is a proof-of-concept implementation of a **ReAct (Reaso
 
 ## ReAct Agent Cycle
 
-```
-┌─────────────────────────────────────────────┐
-│          Start Game ("play")                │
-└──────────────────┬──────────────────────────┘
-                   │
-                   ▼
-        ┌──────────────────────┐
-        │   THINKING/REASONING │
-        │ (Analyze & Plan)     │
-        └──────────────────────┘
-                   │
-                   ▼
-        ┌──────────────────────┐
-        │      ACTING          │
-        │ (Call guess_number   │
-        │      tool)           │
-        └──────────────────────┘
-                   │
-                   ▼
-        ┌──────────────────────┐
-        │     OBSERVING        │
-        │ (Receive tool        │
-        │  feedback)           │
-        └──────────────────────┘
-                   │
-        ┌──────────┴──────────┐
-        │                     │
-    Correct?              Not Correct?
-        │                     │
-        ▼                     ▼
-    ┌───────┐      ┌──────────────────┐
-    │ DONE  │      │ RETHINKING       │
-    │       │      │ (Update strategy │
-    │       │      │  based on result)│
-    └───────┘      └──────────────────┘
-                            │
-                            └─────────┐
-                                      │
-                    Go back to THINKING
+```mermaid
+graph TD
+    Start([Start Game: play]) --> Thinking[THINKING/REASONING: Analyze & Plan]
+    Thinking --> Acting[ACTING: Call guess_number tool]
+    Acting --> Observing[OBSERVING: Receive tool feedback]
+    Observing --> Correct{Correct?}
+    Correct -- No --> Rethinking[RETHINKING: Update strategy]
+    Rethinking --> Thinking
+    Correct -- Yes --> Done([DONE])
 ```
 
 ## How It Works

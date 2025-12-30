@@ -19,6 +19,20 @@ The agent plays a number guessing game where it reasons about the target number,
 **Location**: `src/agent_react_number_guesser/`  
 **Quick Start**: See [Agent README](src/agent_react_number_guesser/README.md) for detailed instructions.
 
+### Progressive Disclosure Agent
+
+A multi-agent system that demonstrates the **Progressive Disclosure** pattern for solving complex, multi-step tasks:
+
+- **Decomposition**: Breaks complex tasks into smaller, manageable sub-tasks
+- **Context Management**: Discloses only relevant information (e.g., specific API docs) for each step to optimize LLM performance
+- **Iterative Execution**: Uses a `LoopAgent` to coordinate a **Planner** and an **Executor** until the goal is achieved
+- **Verification**: Validates results at each step before proceeding
+
+This agent interacts with an external API service to perform multi-step operations like finding a user and adding them to a team, ensuring each step is correctly executed and verified.
+
+**Location**: `src/agent_progressive_disclosure/`  
+**Quick Start**: See [Agent README](src/agent_progressive_disclosure/README.md) for detailed instructions.
+
 ## Setup
 
 ### Environment Configuration
