@@ -1,6 +1,19 @@
 # Google ADK Sample
 
-Sample projects using Google ADK framework for enterprise AI agentic applications.
+Leveraging the Google Agent Development Kit (ADK) to build robust, enterprise-grade, and production-ready AI agent applications.
+
+## Index
+
+- [Agents](#agents)
+  - [NumberGuesser Agent](#numberguesser-agent)
+  - [Progressive Disclosure Agent](#progressive-disclosure-agent)
+  - [PD Troubleshooting Agent](#pd-troubleshooting-agent)
+- [Services](#services)
+  - [Dummy FastAPI Service](#dummy-fastapi-service)
+- [Setup](#setup)
+  - [Environment Configuration](#environment-configuration)
+  - [Installation and Running](#installation-and-running)
+- [Dependencies](#dependencies)
 
 ## Agents
 
@@ -32,6 +45,34 @@ This agent interacts with an external API service to perform multi-step operatio
 
 **Location**: `src/agent_progressive_disclosure/`  
 **Quick Start**: See [Agent README](src/agent_progressive_disclosure/README.md) for detailed instructions.
+
+### PD Troubleshooting Agent
+
+A `SequentialAgent` system that automates the troubleshooting process using the **Progressive Disclosure** pattern:
+
+-   **Intelligent Retrieval**: Uses a retrieval agent to understand user symptoms, query a troubleshooting library, and fetch relevant API documentation.
+-   **Sequential Execution**: Orchestrates a flow from the **Retrieval Agent** to the **Troubleshooter Agent**.
+-   **Automated Troubleshooting**: Automatically executes API requests to verify system state and identify root causes based on retrieved guides.
+-   **Comprehensive Reporting**: Generates a detailed process log and final resolution report.
+
+This agent demonstrates how to bridge the gap between user-reported issues and automated system diagnostics using a structured, guide-driven approach.
+
+**Location**: `src/agent_pd_troubleshooting/`  
+**Quick Start**: See [Agent README](src/agent_pd_troubleshooting/README.md) for detailed instructions.
+
+## Services
+
+### Dummy FastAPI Service
+
+A companion backend service used by the agents to demonstrate real-world API interactions. It provides:
+
+- **User Management**: Endpoints for listing and managing user profiles and their habits.
+- **Team Management**: Endpoints for creating teams and managing team memberships with validation logic (e.g., habit matching).
+- **Interactive Documentation**: Auto-generated API specs that agents can retrieve and analyze at runtime.
+
+This service allows the agents to practice "reasoning over APIs" and performing multi-step operations in a controlled yet realistic environment.
+
+**Location**: `dummy_fastapi_service/`
 
 ## Setup
 
