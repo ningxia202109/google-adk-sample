@@ -2,6 +2,19 @@
 
 Leveraging the Google Agent Development Kit (ADK) to build robust, enterprise-grade, and production-ready AI agent applications.
 
+## Index
+
+- [Agents](#agents)
+  - [NumberGuesser Agent](#numberguesser-agent)
+  - [Progressive Disclosure Agent](#progressive-disclosure-agent)
+  - [PD Troubleshooting Agent](#pd-troubleshooting-agent)
+- [Services](#services)
+  - [Dummy FastAPI Service](#dummy-fastapi-service)
+- [Setup](#setup)
+  - [Environment Configuration](#environment-configuration)
+  - [Installation and Running](#installation-and-running)
+- [Dependencies](#dependencies)
+
 ## Agents
 
 ### NumberGuesser Agent
