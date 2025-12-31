@@ -1,5 +1,8 @@
+from google.adk import Agent
+from google.adk.tools import AgentTool
 from google.adk.apps.app import App
-from google.adk.agents import LlmAgent, SequentialAgent
+from google.adk.agents import LlmAgent
+from google.adk.planners import PlanReActPlanner
 from google.genai.types import GenerateContentConfig
 
 from common.ai_model import GEMINI_MODEL
@@ -44,30 +47,6 @@ def search_issue_by_symptom(symptom_description: str) -> str:
     return "No relevant troubleshooting guide found in the library."
 
 
-agent_retrieve_troubleshooting_guide = LlmAgent(
-    name="agent_retrieve_troubleshooting_guide",
-    model=GEMINI_MODEL,
-    description="Responsible for understanding user request and retrieving relevant troubleshooting guides and API specs.",
-    instruction="""
-# Instructions
-1. Understand the user's troubleshooting request.
-2. find "Valid Issue Symptom" for the user's issue.
-3. Search for a relevant troubleshooting guide using the `search_issue_by_symptom` tool based on "Valid Issue Symptom".
-4. Retrieve the `dummy-fastapi-service` API specification using the `retrieve_service_documentation` tool.
-5. Based on the user's issue, the retrieved troubleshooting guide, and the API specification, generate a tailored troubleshooting plan.
-6. Pass this generated troubleshooting guide/plan to the next agent, output as markdown in `troubleshooting_guide`.
-
-# Valid Issue Symptom
-"one user cannot join a team"
-
-""",
-    tools=[search_issue_by_symptom, retrieve_service_documentation],
-    generate_content_config=GenerateContentConfig(
-        temperature=0.0,
-    ),
-    output_key="troubleshooting_guide",
-)
-
 agent_troubleshooter = LlmAgent(
     name="agent_troubleshooter",
     model=GEMINI_MODEL,
@@ -85,15 +64,37 @@ agent_troubleshooter = LlmAgent(
     output_key="troubleshooting_report",
 )
 
-agent_pd_troubleshooting = SequentialAgent(
-    name="agent_pd_troubleshooting",
-    description="Automated system for retrieving guides and troubleshooting.",
-    sub_agents=[agent_retrieve_troubleshooting_guide, agent_troubleshooter],
+agent_retrieve_troubleshooting_guide = Agent(
+    name="agent_retrieve_troubleshooting_guide",
+    model=GEMINI_MODEL,
+    planner=PlanReActPlanner(),
+    description="Responsible for understanding user request and retrieving relevant troubleshooting guides and API specs.",
+    instruction="""
+# Instructions
+1. Understand the user's troubleshooting request.
+2. find "Valid Issue Symptom" for the user's issue.
+3. Search for a relevant troubleshooting guide using the `search_issue_by_symptom` tool based on "Valid Issue Symptom".
+4. Retrieve the `dummy-fastapi-service` API specification using the `retrieve_service_documentation` tool.
+5. Based on the user's issue, the retrieved troubleshooting guide, and the API specification, generate a tailored troubleshooting plan.
+6. Use the `agent_troubleshooter` tool to execute the troubleshooting plan.
+
+# Valid Issue Symptom
+"one user cannot join a team"
+
+""",
+    tools=[
+        search_issue_by_symptom,
+        retrieve_service_documentation,
+        AgentTool(agent=agent_troubleshooter),
+    ],
+    generate_content_config=GenerateContentConfig(
+        temperature=0.0,
+    ),
 )
 
-root_agent = agent_pd_troubleshooting
+root_agent = agent_retrieve_troubleshooting_guide
 
 app = App(
     name="agent_pd_troubleshooting",
-    root_agent=agent_pd_troubleshooting,
+    root_agent=root_agent,
 )
