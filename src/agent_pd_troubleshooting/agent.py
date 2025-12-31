@@ -55,6 +55,7 @@ def search_issue_by_symptom(symptom_description: str) -> str:
 agent_troubleshooter = LlmAgent(
     name="agent_troubleshooter",
     model=GEMINI_MODEL,
+    include_contents="none",
     description="Responsible for executing the troubleshooting steps using API calls.",
     instruction="""
 1. Read and understand the `troubleshooting_guide` provided by the previous agent.
@@ -69,8 +70,8 @@ agent_troubleshooter = LlmAgent(
     output_key="troubleshooting_report",
 )
 
-agent_retrieve_troubleshooting_guide = LlmAgent(
-    name="agent_retrieve_troubleshooting_guide",
+agent_troubleshooting_planner = LlmAgent(
+    name="agent_troubleshooting_planner",
     model=GEMINI_MODEL,
     planner=PlanReActPlanner(),
     description="Responsible for understanding user request and retrieving relevant troubleshooting guides and API specs.",
@@ -107,7 +108,7 @@ You are a Senior Expert Planner for system troubleshooting. Your goal is to crea
     ),
 )
 
-root_agent = agent_retrieve_troubleshooting_guide
+root_agent = agent_troubleshooting_planner
 
 app = App(
     name="agent_pd_troubleshooting",

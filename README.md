@@ -48,10 +48,10 @@ This agent interacts with an external API service to perform multi-step operatio
 
 ### PD Troubleshooting Agent
 
-A `SequentialAgent` system that automates the troubleshooting process using the **Progressive Disclosure** pattern:
+A system that automates the troubleshooting process using the **Progressive Disclosure** pattern:
 
--   **Intelligent Retrieval**: Uses a retrieval agent to understand user symptoms, query a troubleshooting library, and fetch relevant API documentation.
--   **Sequential Execution**: Orchestrates a flow from the **Retrieval Agent** to the **Troubleshooter Agent**.
+-   **Intelligent Planning**: Uses a **Troubleshooting Planner** to understand user symptoms, query a knowledge base for troubleshooting guides, and retrieve relevant API documentation.
+-   **Guided Execution**: Orchestrates a hand-off from the **Planner** to a **Troubleshooter Executor** that carries out the diagnostic steps.
 -   **Automated Troubleshooting**: Automatically executes API requests to verify system state and identify root causes based on retrieved guides.
 -   **Comprehensive Reporting**: Generates a detailed process log and final resolution report.
 
