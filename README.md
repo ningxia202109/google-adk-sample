@@ -48,14 +48,14 @@ This agent interacts with an external API service to perform multi-step operatio
 
 ### PD Troubleshooting Agent
 
-A `SequentialAgent` system that automates the troubleshooting process using the **Progressive Disclosure** pattern:
+A sophisticated multi-agent system that automates system diagnostics using advanced **Google ADK** features and the **Progressive Disclosure** pattern:
 
--   **Intelligent Retrieval**: Uses a retrieval agent to understand user symptoms, query a troubleshooting library, and fetch relevant API documentation.
--   **Sequential Execution**: Orchestrates a flow from the **Retrieval Agent** to the **Troubleshooter Agent**.
--   **Automated Troubleshooting**: Automatically executes API requests to verify system state and identify root causes based on retrieved guides.
--   **Comprehensive Reporting**: Generates a detailed process log and final resolution report.
+-   **ReAct Planner**: Uses a `PlanReActPlanner` to intelligently decompose user symptoms, retrieve relevant context, and adapt plans based on executor feedback.
+-   **Progressive Disclosure**: Only discloses the most relevant troubleshooting guides and API documentation to the executor, reducing noise and increasing precision.
+-   **Execution Isolation**: Leverages `AgentTool` to encapsulate detailed API interactions within a specialized executor agent, abstracting high-level results back to the planner.
+-   **Context Optimization**: Uses `include_contents="none"` and `temperature=0.0` for deterministic, stateless execution focused entirely on the current troubleshooting guide.
 
-This agent demonstrates how to bridge the gap between user-reported issues and automated system diagnostics using a structured, guide-driven approach.
+This agent demonstrates how to build enterprise-grade troubleshooting workflows by separating strategic planning from isolated technical execution.
 
 **Location**: `src/agent_pd_troubleshooting/`  
 **Quick Start**: See [Agent README](src/agent_pd_troubleshooting/README.md) for detailed instructions.
