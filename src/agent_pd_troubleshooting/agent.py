@@ -91,6 +91,8 @@ agent_pd_troubleshooting = SequentialAgent(
     sub_agents=[agent_retrieve_troubleshooting_guide, agent_troubleshooter],
 )
 
+root_agent = agent_pd_troubleshooting
+
 app = App(
     name="agent_pd_troubleshooting",
     root_agent=agent_pd_troubleshooting,
