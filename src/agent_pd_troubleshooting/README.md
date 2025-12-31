@@ -8,29 +8,43 @@ This agent system is designed to automate the troubleshooting process for the `d
 ## Workflow Diagram
 
 ```mermaid
-graph TD
-    User([User Request]) --> Planner[agent_troubleshooting_planner]
-    
-    subgraph "Planning & Knowledge Retrieval"
-    Planner --> KB[search_issue_by_symptom]
-    KB --> |Troubleshooting Guide| Planner
-    Planner --> Doc[retrieve_service_documentation]
-    Doc --> |OpenAPI Spec| Planner
-    Planner --> |Formulate Plan| Planner
-    end
-    
-    Planner --> Executor[agent_troubleshooter]
-    
-    subgraph "Guided Execution"
-    Executor --> API[execute_api_request]
-    API --> |API Responses| Executor
-    Executor --> |Execution Report| Planner
-    end
-    
-    Planner --> |Final Answer| Final([User Report])
+graph TB
+    %% Nodes
+    User([User Request])
+    Planner{{agent_troubleshooting_planner}}
+    Executor[[agent_troubleshooter]]
+    Final([Final Report])
 
-    style Planner fill:#f9f,stroke:#333,stroke-width:2px
-    style Executor fill:#bbf,stroke:#333,stroke-width:2px
+    %% Planner Flow
+    subgraph "Phase 1: Diagnostic & Planning"
+        KB[(Troubleshooting KB)]
+        Doc[/API Documentation/]
+        Planner -.-> |1. Search Symptom| KB
+        KB -.-> |Guide| Planner
+        Planner -.-> |2. Fetch Spec| Doc
+        Doc -.-> |OpenAPI Spec| Planner
+    end
+
+    %% Execution Flow
+    subgraph "Phase 2: Automated Execution"
+        API(Target Service API)
+        Planner ==> |3. Detailed Plan| Executor
+        Executor --> |4. API Calls| API
+        API --> |Response| Executor
+        Executor -.-> |5. Diagnostic Log| Planner
+    end
+
+    %% Final Output
+    User --> Planner
+    Planner --> Final
+
+    %% Styling
+    style User fill:#f9f9f9,stroke:#666
+    style Planner fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    style Executor fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    style Final fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    style KB fill:#f3e5f5,stroke:#4a148c
+    style Doc fill:#f3e5f5,stroke:#4a148c
 ```
 
 ## Components
