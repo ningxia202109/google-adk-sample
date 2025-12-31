@@ -9,28 +9,28 @@ This agent system is designed to automate the troubleshooting process for the `d
 
 ```mermaid
 graph TD
-    User([User Request]) --> A1[agent_troubleshooting_planner]
+    User([User Request]) --> Planner[agent_troubleshooting_planner]
     
-    subgraph "Retrieve Phase"
-    A1 --> T1[search_issue_by_symptom]
-    T1 --> |Retrieved Guide| A1
-    A1 --> T2[retrieve_service_documentation]
-    T2 --> |API Spec| A1
-    A1 --> |Generate Troubleshooting Guide| Plan[Troubleshooting Guide/Plan]
+    subgraph "Planning & Knowledge Retrieval"
+    Planner --> KB[search_issue_by_symptom]
+    KB --> |Troubleshooting Guide| Planner
+    Planner --> Doc[retrieve_service_documentation]
+    Doc --> |OpenAPI Spec| Planner
+    Planner --> |Formulate Plan| Planner
     end
     
-    Plan --> A2[agent_troubleshooter]
+    Planner --> Executor[agent_troubleshooter]
     
-    subgraph "Execution Phase"
-    A2 --> T3[execute_api_request]
-    T3 --> |API Response| A2
-    A2 --> |Final Report| Result([Troubleshooting Report])
+    subgraph "Guided Execution"
+    Executor --> API[execute_api_request]
+    API --> |API Responses| Executor
+    Executor --> |Execution Report| Planner
     end
     
-    subgraph "SequentialAgent: agent_pd_troubleshooting"
-    A1
-    A2
-    end
+    Planner --> |Final Answer| Final([User Report])
+
+    style Planner fill:#f9f,stroke:#333,stroke-width:2px
+    style Executor fill:#bbf,stroke:#333,stroke-width:2px
 ```
 
 ## Components
@@ -64,29 +64,32 @@ The system is encapsulated within an `App` where the `agent_troubleshooting_plan
 When a user submits a request like **"Bob cannot join the swim team"**, the `agent_troubleshooting_planner` executes the following multi-step reasoning and action process:
 
 ### Step 1: Initial Planning (`agent_troubleshooting_planner`)
+```
 **Thought**:
 1. Search for relevant troubleshooting guides using the `search_issue_by_symptom` tool with the symptom "one user cannot join a team".
 2. Retrieve the API documentation using the `retrieve_service_documentation` tool to understand the available endpoints and their parameters.
 3. Based on the retrieved guide and documentation, create a step-by-step troubleshooting plan.
 4. Execute the troubleshooting plan using the `agent_troubleshooter` tool.
+```
 
 ### Step 2: Search Knowledge Base
 Planner calls `search_issue_by_symptom(symptom_description="one user cannot join a team")`.
+```
 **Result**:
 > ## symptom: one user cannot join a team.
 > ## troubleshooting steps:
 > 1. check if the user exists
 > 2. check if team exists
 > 3. check if user's habits match team
+```
 
 ### Step 3: Reasoning and API Retrieval
-**REASONING**:
-I have retrieved the troubleshooting steps for the symptom "one user cannot join a team". Now, I need to retrieve the service documentation to understand how to perform these checks using the API.
 
 Planner calls `retrieve_service_documentation()`.
 **Result**: (Returns OpenAPI JSON including `/users`, `/teams`, and team addition endpoints).
 
 ### Step 4: Formulation of Execution Plan
+```
 **REASONING**:
 I have the troubleshooting steps and the API documentation. Now I can formulate a detailed plan for the `agent_troubleshooter`:
 1. **Find Bob's User ID**: Call `GET /users` and search for a user named "Bob".
@@ -94,6 +97,7 @@ I have the troubleshooting steps and the API documentation. Now I can formulate 
 3. **Check User Habits**: If Bob is found, inspect his `habits` field.
 4. **Check Team Requirements**: Compare Bob's habits with the team's requirements.
 5. **Attempt to Add User**: Try to add Bob to the swim team using `POST /teams/{team_name}/users/{user_id}` to observe the error.
+```
 
 ### Step 5: Execution (via `agent_troubleshooter`)
 Planner calls `agent_troubleshooter(request="...")`.
@@ -108,6 +112,7 @@ Planner calls `agent_troubleshooter(request="...")`.
 > Attempted `POST /teams/swim/users/2`. Result: **400 Bad Request**.
 
 ### Step 6: Final Answer Generation
+```
 **Thought**:
 The `agent_troubleshooter` has successfully identified the issue. I have all the information needed to answer the user.
 
@@ -121,3 +126,4 @@ The `agent_troubleshooter` has successfully identified the issue. I have all the
 > - **System Error**: An attempt to add Bob to the "swim" team resulted in a 400 Bad Request error because his habits do not match the team's requirements.
 >
 > To resolve this, Bob's profile needs to be updated to include "swim" in his habits.
+```
