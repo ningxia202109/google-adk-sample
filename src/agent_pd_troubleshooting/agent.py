@@ -1,4 +1,3 @@
-from google.adk import Agent
 from google.adk.tools import AgentTool
 from google.adk.apps.app import App
 from google.adk.agents import LlmAgent
@@ -28,15 +27,21 @@ TROUBLESHOOTING_GUIDES = [
 
 def search_issue_by_symptom(symptom_description: str) -> str:
     """
-    Searches the troubleshooting library for a guide matching the symptom description.
+    [MOCK] Performs a semantic similarity search against a Vector Database.
+
+    In a production environment, this tool would:
+    1. Convert the `symptom_description` into an embedding vector.
+    2. Query a VectorDB (e.g., Pinecone, Milvus, Vertex AI Vector Search).
+    3. Return the most relevant troubleshooting guides based on cosine similarity.
 
     Args:
-        symptom_description: A description of the issue or symptom.
+        symptom_description: A natural language description of the issue.
 
     Returns:
-        The troubleshooting guide if a match is found, or a message indicating no guide was found.
+        The content of the matched troubleshooting guide.
     """
-    # Mock similarity search
+    # Mock logic: Simple keyword matching simulating semantic hit
+    print(f">> [VectorDB Search] Querying embedding for: '{symptom_description}'")
     for entry in TROUBLESHOOTING_GUIDES:
         if (
             entry["symptom"].lower() in symptom_description.lower()
@@ -44,7 +49,7 @@ def search_issue_by_symptom(symptom_description: str) -> str:
         ):
             return entry["guide"]
 
-    return "No relevant troubleshooting guide found in the library."
+    return "No relevant troubleshooting guide found in the Knowledge Base."
 
 
 agent_troubleshooter = LlmAgent(
@@ -64,29 +69,39 @@ agent_troubleshooter = LlmAgent(
     output_key="troubleshooting_report",
 )
 
-agent_retrieve_troubleshooting_guide = Agent(
+agent_retrieve_troubleshooting_guide = LlmAgent(
     name="agent_retrieve_troubleshooting_guide",
     model=GEMINI_MODEL,
     planner=PlanReActPlanner(),
     description="Responsible for understanding user request and retrieving relevant troubleshooting guides and API specs.",
     instruction="""
-# Instructions
-1. Understand the user's troubleshooting request.
-2. find "Valid Issue Symptom" for the user's issue.
-3. Search for a relevant troubleshooting guide using the `search_issue_by_symptom` tool based on "Valid Issue Symptom".
-4. Retrieve the `dummy-fastapi-service` API specification using the `retrieve_service_documentation` tool.
-5. Based on the user's issue, the retrieved troubleshooting guide, and the API specification, generate a tailored troubleshooting plan.
-6. Use the `agent_troubleshooter` tool to execute the troubleshooting plan.
+# Role
+You are a Senior Expert Planner for system troubleshooting. Your goal is to create a safe, step-by-step execution plan and then use "agent_troubleshooter" to execute it.
+
+# Critical Safety Restrictions
+1. **READ-ONLY Policy**: You are strictly FORBIDDEN from generating plans that modify data.
+2. **Allowed Methods**: You may only inspect the system using `GET` requests (via `execute_api_request` if needed to verify current state) or use documentation tools.
+3. **Prohibited Methods**: Do NOT include `POST`, `PUT`, `DELETE`, or `PATCH` actions in your own reasoning steps. These are reserved for the executor agent.
+
+# Workflow
+1. **Analyze**: Understand the user's reported symptom.
+2. **Retrieve Context**: 
+   - Use `search_issue_by_symptom` to find similar past issues (simulating Vector Search).
+   - Use `retrieve_service_documentation` to understand the API contracts.
+3. **Plan**: Generate a detailed troubleshooting guide.
+   - The plan must be executable by the "agent_troubleshooter".
+   - The plan should explicitly list which API endpoints to call.
+4. **Troubleshoot**: Use `agent_troubleshooter` to do troubleshooting with the troubleshooting guide you generated.
 
 # Valid Issue Symptom
 "one user cannot join a team"
-
 """,
     tools=[
         search_issue_by_symptom,
         retrieve_service_documentation,
         AgentTool(agent=agent_troubleshooter),
     ],
+    output_key="troubleshooting_guide",
     generate_content_config=GenerateContentConfig(
         temperature=0.0,
     ),
