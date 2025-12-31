@@ -1,4 +1,4 @@
-# Agent Progressive Disclosure Troubleshooting
+# Agent PD Troubleshooting
 
 This agent system is designed to automate the troubleshooting process for the `dummy-fastapi-service`. It follows a sequential process:
 
@@ -27,7 +27,7 @@ graph TD
     A2 --> |Final Report| Result([Troubleshooting Report])
     end
     
-    subgraph "SequentialAgent: agent_progressive_disclosure_troubleshooting"
+    subgraph "SequentialAgent: agent_pd_troubleshooting"
     A1
     A2
     end
@@ -44,7 +44,7 @@ graph TD
     -   Executes the plan step-by-step.
     -   Uses `execute_api_request` to interact with the service.
     -   Reports process and results.
--   **`agent_progressive_disclosure_troubleshooting`**: A `SequentialAgent` that orchestrates the workflow from retrieval to execution.
+-   **`agent_pd_troubleshooting`**: A `SequentialAgent` that orchestrates the workflow from retrieval to execution.
 
 ## Example Usage
 

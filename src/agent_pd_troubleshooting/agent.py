@@ -85,13 +85,13 @@ agent_troubleshooter = LlmAgent(
     output_key="troubleshooting_report",
 )
 
-agent_progressive_disclosure_troubleshooting = SequentialAgent(
-    name="agent_progressive_disclosure_troubleshooting",
+agent_pd_troubleshooting = SequentialAgent(
+    name="agent_pd_troubleshooting",
     description="Automated system for retrieving guides and troubleshooting.",
     sub_agents=[agent_retrieve_troubleshooting_guide, agent_troubleshooter],
 )
 
 app = App(
-    name="agent_progressive_disclosure_troubleshooting",
-    root_agent=agent_progressive_disclosure_troubleshooting,
+    name="agent_pd_troubleshooting",
+    root_agent=agent_pd_troubleshooting,
 )
