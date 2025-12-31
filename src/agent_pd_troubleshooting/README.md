@@ -37,25 +37,31 @@ The system consists of two specialized agents:
 
 ```mermaid
 graph TD
-    User([User]) -->|Reports Symptom| Planner[Troubleshooting Planner Agent]
-    subgraph "Agent Troubleshooting Planner (PlanReActPlanner)"
-        Planner -->|1. Search Knowledge Base| Search[search_issue_by_symptom]
-        Planner -->|2. Retrieve API Specs| Docs[retrieve_service_documentation]
-        Planner -->|3. Create Plan| Guide[Troubleshooting Guide]
+    User([User]) -->|1. Reports Symptom| Planner[Troubleshooting Planner Agent]
+    
+    subgraph Planner_Process [Agent Troubleshooting Planner - PlanReActPlanner]
+        Planner -->|2. Search Knowledge Base| Search[search_issue_by_symptom]
+        Planner -->|3. Retrieve API Specs| Docs[retrieve_service_documentation]
+        Planner -->|4. Generate Troubleshooting Guide| Guide[Troubleshooting Guide]
     end
-    Planner -->|4. Delegate via AgentTool| Executor[Troubleshooter Executor Agent]
-    subgraph "Agent Troubleshooter (include_contents='none')"
-        Executor -->|5. Follow Guide| API[execute_api_request]
-        API -->|6. Return Result| Executor
+    
+    Guide -->|5. Pass Guide via AgentTool| Executor[Troubleshooter Executor Agent]
+    
+    subgraph Executor_Process [Agent Troubleshooter - include_contents='none']
+        Executor -->|6. Follow Guide| API[execute_api_request]
+        API -->|7. API Execution| System[(System APIs)]
+        System -->|8. API Response| Executor
     end
-    Executor -->|7. Final Report| Planner
-    Planner -->|8. Comprehensive Response| User
+    
+    Executor -->|9. Summary Result| Planner
+    Planner -.->|10. Optional: Rescope| Guide
+    Planner -->|11. Final Comprehensive Report| User
 ```
 
 1.  **Troubleshooting Planner (`agent_troubleshooting_planner`)**:
     - **Role**: Senior Expert Planner using **ReAct Planner**.
     - **Tools**: `search_issue_by_symptom` (Mock VectorDB), `retrieve_service_documentation` (API Specs), and the `agent_troubleshooter` (via `AgentTool`).
-    - **Workflow**: Analyzes symptoms, retrieves documentation, creates a specific troubleshooting guide, and delegates tasks to the executor agent. It remains in a loop (ReAct) to rescope or finalize based on executor feedback.
+    - **Workflow**: Analyzes symptoms, retrieves documentation, and **generates a detailed troubleshooting guide**. It then **passes this guide** to the `agent_troubleshooter` via the `AgentTool`. It remains in a loop (ReAct) to rescope or finalize based on the executor's feedback.
 
 2.  **Troubleshooter Executor (`agent_troubleshooter`)**:
     - **Role**: Execution specialist utilizing **Progressive Disclosure**.
@@ -65,9 +71,17 @@ graph TD
 
 ## How it Works
 
-1.  **User Report**: A user reports a symptom.
-2.  **Retrieval**: The Planner agent searches for relevant troubleshooting guides and API documentation.
-3.  **Planning**: The Planner generates a detailed troubleshooting guide specific to the symptom.
-4.  **Delegation**: The Planner calls the Troubleshooter agent (via `AgentTool`).
-5.  **Execution**: The Troubleshooter follows the guide, calls APIs, and generates a final report.
-6.  **Resolution**: The system returns a comprehensive report of the findings.
+The system follows a structured diagnostic process, as illustrated by this example:
+
+**Example Scenario**: A user reports, *"Bob cannot join the swim team."*
+
+1.  **User Report**: The user provides the symptom: *"Bob cannot join the swim team."*
+2.  **Retrieval (Progressive Disclosure)**: The Planner agent searches for relevant troubleshooting guides (e.g., "one user cannot join a team") and retrieves the necessary API specifications for user and team services.
+3.  **Planning (ReAct)**: The Planner generates a tailored troubleshooting guide:
+    - Step 1: Verify if user 'Bob' exists.
+    - Step 2: Verify if 'swim team' exists.
+    - Step 3: Check if Bob's habits match the swim team requirements.
+4.  **Delegation (AgentTool)**: The Planner delegates these steps to the Troubleshooter Executor, passing only the guide and the relevant API context.
+5.  **Execution (Isolation)**: The Troubleshooter follows the guide, makes the actual `GET` requests to the system APIs, and observes the responses. Detailed API logs are kept internal to the executor.
+6.  **Feedback & Rescoping**: The Troubleshooter returns a high-level summary (e.g., *"User exists, team exists, but habit mismatch found"*). If needed, the Planner can rescope and ask for further checks.
+7.  **Resolution**: The system returns a final, comprehensive report to the user explaining why Bob cannot join the team.
