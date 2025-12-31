@@ -1,143 +1,50 @@
-# Agent PD Troubleshooting
+# Agent Progressive Disclosure Troubleshooting
 
-This agent system is designed to automate the troubleshooting process for the `dummy-fastapi-service`. It follows a sequential process:
+This project demonstrates a multi-agent troubleshooting system built using the **Google Agent Development Kit (ADK)**. It showcases how to use advanced planning and delegation to solve complex system issues in a safe and structured manner.
 
-1.  **Retrieve Troubleshooting Guide**: The first agent, `agent_troubleshooting_planner`, analyzes the user's issue, searches for a matching guide in a mock troubleshooting library, and retrieves the API documentation for the relevant service.
-2.  **Troubleshoot**: The second agent, `agent_troubleshooter`, takes the generated troubleshooting plan and executes the necessary API calls to diagnose and resolve the issue.
+## Technical Stack & ADK Components
 
-## Workflow Diagram
+The project leverages several key components from the Google ADK:
 
-```mermaid
-graph TB
-    %% Nodes
-    User([User Request])
-    Planner{{agent_troubleshooting_planner}}
-    Executor[[agent_troubleshooter]]
-    Final([Final Report])
+### 1. `PlanReActPlanner`
+The `agent_troubleshooting_planner` utilizes the `PlanReActPlanner`. This planner enables the agent to:
+- **Plan**: Break down a high-level user request (e.g., "one user cannot join a team") into a sequence of logical steps.
+- **Act & React**: Execute those steps using available tools and adapt the plan based on the feedback or results obtained at each step.
 
-    %% Planner Flow
-    subgraph "Phase 1: Diagnostic & Planning"
-        KB[(Troubleshooting KB)]
-        Doc[/API Documentation/]
-        Planner -.-> |1. Search Symptom| KB
-        KB -.-> |Guide| Planner
-        Planner -.-> |2. Fetch Spec| Doc
-        Doc -.-> |OpenAPI Spec| Planner
-    end
+### 2. `AgentTool`
+This component is used to implement a **Multi-Agent Orchestration** pattern. 
+- The `agent_troubleshooter` is wrapped in an `AgentTool` and provided as a tool to the `agent_troubleshooting_planner`.
+- This allows the planner agent to delegate the actual execution of troubleshooting steps (API calls) to a specialized worker agent.
 
-    %% Execution Flow
-    subgraph "Phase 2: Automated Execution"
-        API(Target Service API)
-        Planner ==> |3. Detailed Plan| Executor
-        Executor --> |4. API Calls| API
-        API --> |Response| Executor
-        Executor -.-> |5. Diagnostic Log| Planner
-    end
+### 3. `generate_content_config`
+Both agents are configured using `GenerateContentConfig`.
+- In this project, it is specifically used to set `temperature=0.0` for both agents.
+- This ensures deterministic and consistent behavior, which is critical for system troubleshooting and planning.
 
-    %% Final Output
-    User --> Planner
-    Planner --> Final
+### 4. `include_contents="none"`
+The `agent_troubleshooter` is configured with `include_contents="none"`.
+- This is an optimization for context management. 
+- It tells the ADK not to automatically include the full conversation history in every request to the model, which is useful when the agent's task is focused on executing a specific, self-contained guide provided by the planner.
 
-    %% Styling
-    style User fill:#f9f9f9,stroke:#666
-    style Planner fill:#e1f5fe,stroke:#01579b,stroke-width:2px
-    style Executor fill:#fff3e0,stroke:#e65100,stroke-width:2px
-    style Final fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
-    style KB fill:#f3e5f5,stroke:#4a148c
-    style Doc fill:#f3e5f5,stroke:#4a148c
-```
+## Project Architecture
 
-## Components
+The system consists of two specialized agents:
 
-### 1. Troubleshooting Planner (`agent_troubleshooting_planner`)
+1.  **Troubleshooting Planner (`agent_troubleshooting_planner`)**:
+    - **Role**: Senior Expert Planner.
+    - **Tools**: `search_issue_by_symptom` (Mock VectorDB), `retrieve_service_documentation` (API Specs), and the `agent_troubleshooter` (via `AgentTool`).
+    - **Workflow**: Analyzes symptoms, retrieves documentation, creates a troubleshooting plan, and delegates execution.
 
-The **Troubleshooting Planner** is a senior-level expert responsible for the initial diagnostic and planning phase. It operates under a strict **READ-ONLY Policy** to ensure system stability during investigation.
+2.  **Troubleshooter Executor (`agent_troubleshooter`)**:
+    - **Role**: Execution specialist.
+    - **Tools**: `execute_api_request`.
+    - **Workflow**: Takes the troubleshooting guide from the planner and performs the actual API calls to diagnose the system.
 
--   **Role**: Analyzes the user's reported symptom and constructs a safe, step-by-step execution plan.
--   **Key Tools**:
-    -   `search_issue_by_symptom`: Simulates a semantic search against a Vector Database to find relevant historical troubleshooting guides.
-    -   `retrieve_service_documentation`: Fetches the live OpenAPI specification to understand the current API contracts.
-    -   `agent_troubleshooter`: Once a plan is formulated, the planner delegates the execution to this agent.
--   **Capabilities**: It uses a `PlanReActPlanner` to handle complex reasoning, ensuring that all necessary context (documentation and past issues) is gathered before any action is taken.
+## How it Works
 
-### 2. Troubleshooter Executor (`agent_troubleshooter`)
-
-The **Troubleshooter Executor** is responsible for the "Execution Phase." It takes the high-level plan generated by the Planner and translates it into technical actions.
-
--   **Role**: Executes troubleshooting steps by interacting directly with the system's APIs and generates a final diagnostic report.
--   **Key Tools**:
-    -   `execute_api_request`: Performs live API calls (GET, POST, etc.) as directed by the troubleshooting guide.
--   **Capabilities**: It focuses on the precision of API interactions and detailed reporting of the responses received, providing a comprehensive audit trail of the troubleshooting process.
-
-### 3. Orchestration
-
-The system is encapsulated within an `App` where the `agent_troubleshooting_planner` serves as the `root_agent`. This creates a seamless flow: the user interacts with the Planner, which then manages the retrieval of knowledge, the creation of the guide, and the orchestration of the Executor.
-
-## Example Usage
-
-When a user submits a request like **"Bob cannot join the swim team"**, the `agent_troubleshooting_planner` executes the following multi-step reasoning and action process:
-
-### Step 1: Initial Planning (`agent_troubleshooting_planner`)
-```
-**Thought**:
-1. Search for relevant troubleshooting guides using the `search_issue_by_symptom` tool with the symptom "one user cannot join a team".
-2. Retrieve the API documentation using the `retrieve_service_documentation` tool to understand the available endpoints and their parameters.
-3. Based on the retrieved guide and documentation, create a step-by-step troubleshooting plan.
-4. Execute the troubleshooting plan using the `agent_troubleshooter` tool.
-```
-
-### Step 2: Search Knowledge Base
-Planner calls `search_issue_by_symptom(symptom_description="one user cannot join a team")`.
-```
-**Result**:
-> ## symptom: one user cannot join a team.
-> ## troubleshooting steps:
-> 1. check if the user exists
-> 2. check if team exists
-> 3. check if user's habits match team
-```
-
-### Step 3: Reasoning and API Retrieval
-
-Planner calls `retrieve_service_documentation()`.
-**Result**: (Returns OpenAPI JSON including `/users`, `/teams`, and team addition endpoints).
-
-### Step 4: Formulation of Execution Plan
-```
-**REASONING**:
-I have the troubleshooting steps and the API documentation. Now I can formulate a detailed plan for the `agent_troubleshooter`:
-1. **Find Bob's User ID**: Call `GET /users` and search for a user named "Bob".
-2. **Verify Team Existence**: Call `GET /teams` and search for a team named "swim".
-3. **Check User Habits**: If Bob is found, inspect his `habits` field.
-4. **Check Team Requirements**: Compare Bob's habits with the team's requirements.
-5. **Attempt to Add User**: Try to add Bob to the swim team using `POST /teams/{team_name}/users/{user_id}` to observe the error.
-```
-
-### Step 5: Execution (via `agent_troubleshooter`)
-Planner calls `agent_troubleshooter(request="...")`.
-**Executor Result**:
-> ### 1. Find Bob's User ID
-> I called `GET /users` and found **Bob Jones** (User ID: 2) with habits: `["sing"]`.
-> ### 2. Find the "swim" Team
-> I called `GET /teams` and confirmed the **"swim"** team exists.
-> ### 3. Check Bob's Habits
-> Bob's habits are `["sing"]`. "swim" is not among them.
-> ### 4. Attempt to Add Bob to the "swim" Team
-> Attempted `POST /teams/swim/users/2`. Result: **400 Bad Request**.
-
-### Step 6: Final Answer Generation
-```
-**Thought**:
-The `agent_troubleshooter` has successfully identified the issue. I have all the information needed to answer the user.
-
-**Final Answer**:
-> Bob cannot join the swim team because his profile does not list "swim" as one of his habits.
->
-> During the troubleshooting process, I found that:
-> - **User Found**: Bob (User ID: 2) exists in the system.
-> - **Team Found**: The "swim" team exists.
-> - **Habit Mismatch**: Bob's current habits are `["sing"]`.
-> - **System Error**: An attempt to add Bob to the "swim" team resulted in a 400 Bad Request error because his habits do not match the team's requirements.
->
-> To resolve this, Bob's profile needs to be updated to include "swim" in his habits.
-```
+1.  **User Report**: A user reports a symptom.
+2.  **Retrieval**: The Planner agent searches for relevant troubleshooting guides and API documentation.
+3.  **Planning**: The Planner generates a detailed troubleshooting guide specific to the symptom.
+4.  **Delegation**: The Planner calls the Troubleshooter agent (via `AgentTool`).
+5.  **Execution**: The Troubleshooter follows the guide, calls APIs, and generates a final report.
+6.  **Resolution**: The system returns a comprehensive report of the findings.
