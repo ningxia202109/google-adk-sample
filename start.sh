@@ -33,7 +33,7 @@ cleanup() {
 
     # Stop docker containers
     echo "Stopping docker containers..."
-    docker compose -f docker-compose/docker-compose.yml down
+    docker compose -f ../docker-compose/docker-compose.yml down
     
     cd ..
     echo "Cleanup complete"

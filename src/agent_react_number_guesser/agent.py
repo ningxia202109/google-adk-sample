@@ -6,6 +6,11 @@ from google.adk.agents.context_cache_config import ContextCacheConfig
 from agent_react_number_guesser.guess_number import guess_number
 from common.ai_model import GEMINI_MODEL
 
+from opentelemetry import trace
+from common.otel_config import provider
+
+trace.set_tracer_provider(provider)
+
 agent_react_number_guesser = LlmAgent(
     name="NumberGuesser",
     model=GEMINI_MODEL,
@@ -24,7 +29,7 @@ verify until they guess the correct number.
     ),
     tools=[guess_number],
 )
-root_agent = agent_react_number_guesser
+# root_agent = agent_react_number_guesser
 
 app = App(
     name="agent_react_number_guesser",
