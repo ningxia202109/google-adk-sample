@@ -13,6 +13,7 @@ Leveraging the Google Agent Development Kit (ADK) to build robust, enterprise-gr
 - [Setup](#setup)
   - [Environment Configuration](#environment-configuration)
   - [Installation and Running](#installation-and-running)
+- [Observability with OpenTelemetry](#observability-with-opentelemetry)
 - [Dependencies](#dependencies)
 
 ## Agents
@@ -92,14 +93,40 @@ GOOGLE_API_KEY=your_api_key_here
 
 ### Installation and Running
 
+Follow these steps to set up and run the application:
+
+1.  **Install dependencies and set up virtual environment**:
+    ```bash
+    uv sync
+    ```
+
+2.  **Activate the virtual environment**:
+    ```bash
+    . ./.venv/bin/activate
+    ```
+
+3.  **Run the application**:
+    ```bash
+    ./start.sh
+    ```
+
+After starting, you can access the web interface at `http://127.0.0.1:8000`
+
+### Observability with OpenTelemetry
+
+This project uses OpenTelemetry to provide observability into agent execution. You can observe agent logs, traces, and performance metrics.
+
+To trace an agent's execution from the command line, use the `adk run` command followed by the path to the agent's source code:
+
 ```bash
-uv sync
-./start.sh
+adk run src/agent_react_number_guesser/agent.py
 ```
 
-Then access the web interface at `http://127.0.0.1:8000`
+This will initialize the `OtelTracingPlugin`, which exports spans to a local collector (configured in `src/common/otel_plugin.py`). By default, it's set to send traces to `http://localhost:5000/v1/traces`.
 
 ## Dependencies
 
 - google-adk
 - litellm
+- opentelemetry-sdk
+- opentelemetry-exporter-otlp-proto-http
