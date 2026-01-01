@@ -7,8 +7,12 @@ from agent_react_number_guesser.guess_number import guess_number
 from common.ai_model import GEMINI_MODEL
 
 from opentelemetry import trace
-from common.otel_config import provider
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
+from common.otel_config import provider, exporter
 
+# Use BatchSpanProcessor for production-like environments (e.g., web server)
+# to ensure spans are exported in the background without blocking.
+provider.add_span_processor(BatchSpanProcessor(exporter))
 trace.set_tracer_provider(provider)
 
 agent_react_number_guesser = LlmAgent(

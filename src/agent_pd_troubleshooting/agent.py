@@ -9,6 +9,14 @@ from common.dummy_service_tools import (
     retrieve_service_documentation,
     execute_api_request,
 )
+from opentelemetry import trace
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
+from common.otel_config import provider, exporter
+
+# Use BatchSpanProcessor for production-like environments (e.g., web server)
+# to ensure spans are exported in the background without blocking.
+provider.add_span_processor(BatchSpanProcessor(exporter))
+trace.set_tracer_provider(provider)
 
 # Mock troubleshooting database
 TROUBLESHOOTING_GUIDES = [
