@@ -30,6 +30,10 @@ cleanup() {
     # Kill any process using ports
     kill_port_8000
     kill_port_6060
+
+    # Stop docker containers
+    echo "Stopping docker containers..."
+    docker compose -f ../docker-compose/docker-compose.yml down
     
     cd ..
     echo "Cleanup complete"
@@ -39,6 +43,11 @@ cleanup() {
 
 # Set trap to catch Ctrl+C (SIGINT)
 trap cleanup SIGINT
+
+# Start docker containers
+echo "Starting docker containers..."
+docker compose -f docker-compose/docker-compose.yml up -d
+
 cd src
 # Start adk web on port 8000
 echo "Starting adk web on port 8000..."

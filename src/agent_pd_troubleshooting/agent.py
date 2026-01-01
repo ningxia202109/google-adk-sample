@@ -9,6 +9,7 @@ from common.dummy_service_tools import (
     retrieve_service_documentation,
     execute_api_request,
 )
+from common.otel_plugin import OtelTracingPlugin
 
 # Mock troubleshooting database
 TROUBLESHOOTING_GUIDES = [
@@ -113,4 +114,5 @@ root_agent = agent_troubleshooting_planner
 app = App(
     name="agent_pd_troubleshooting",
     root_agent=root_agent,
+    plugins=[OtelTracingPlugin()],
 )
