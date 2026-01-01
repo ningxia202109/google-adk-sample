@@ -748,6 +748,8 @@ source = { virtual = "." }
 dependencies = [
     { name = "google-adk" },
     { name = "litellm" },
+    { name = "opentelemetry-exporter-otlp-proto-http" },
+    { name = "opentelemetry-sdk" },
     { name = "pydantic", extra = ["email"] },
     { name = "ruff" },
 ]
@@ -756,6 +758,8 @@ dependencies = [
 requires-dist = [
     { name = "google-adk", specifier = ">=1.21.0" },
     { name = "litellm", specifier = ">=1.80.11" },
+    { name = "opentelemetry-exporter-otlp-proto-http", specifier = ">=1.37.0" },
+    { name = "opentelemetry-sdk", specifier = ">=1.37.0" },
     { name = "pydantic", extras = ["email"], specifier = ">=2.12.5" },
     { name = "ruff", specifier = ">=0.14.10" },
 ]
