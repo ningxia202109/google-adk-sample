@@ -8,14 +8,7 @@ from common.dummy_service_tools import (
     retrieve_service_documentation,
     execute_api_request,
 )
-from opentelemetry import trace
-from opentelemetry.sdk.trace.export import BatchSpanProcessor
-from common.otel_config import provider, exporter
-
-# Use BatchSpanProcessor for production-like environments (e.g., web server)
-# to ensure spans are exported in the background without blocking.
-provider.add_span_processor(BatchSpanProcessor(exporter))
-trace.set_tracer_provider(provider)
+from common.otel_plugin import OtelTracingPlugin
 
 
 agent_planner = LlmAgent(
@@ -73,6 +66,7 @@ root_agent = agent_progressive_disclosure
 app = App(
     name="agent_progressive_disclosure",
     root_agent=agent_progressive_disclosure,
+    plugins=[OtelTracingPlugin()],
     context_cache_config=ContextCacheConfig(
         min_tokens=4096,
         ttl_seconds=600,  # 10 mins for research sessions
