@@ -14,7 +14,20 @@ Leveraging the Google Agent Development Kit (ADK) to build robust, enterprise-gr
   - [Environment Configuration](#environment-configuration)
   - [Installation and Running](#installation-and-running)
 - [Observability with OpenTelemetry](#observability-with-opentelemetry)
+- [Design Guidelines](#design-guidelines)
 - [Dependencies](#dependencies)
+
+## Design Guidelines
+
+### System Instruction Design Guideline
+
+The [ADK System Infrastructure Design Guideline](adk-system-infrastructure-design-guideline.md) provides an industrial-grade blueprint for building robust AI agents. It covers:
+
+- **Core Philosophy**: Treating prompts as production code and implementing "Defensive Design".
+- **4-Layer Architecture**: A strict hierarchy for Meta-governance, Observability (thought traces), FSM-based Logic, and Tool Contracts.
+- **Design Patterns**: Best practices for variable scope isolation, explicit state machine transitions, and semantic-logic mapping.
+
+This standard transforms agent development from "creative writing" into rigorous software engineering.
 
 ## Agents
 
