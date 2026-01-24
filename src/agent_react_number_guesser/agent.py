@@ -6,6 +6,7 @@ from google.adk.agents.context_cache_config import ContextCacheConfig
 from agent_react_number_guesser.guess_number import guess_number
 from common.ai_model import GEMINI_MODEL
 from common.otel_plugin import OtelTracingPlugin
+from common.logging_plugin import StructuredLoggingPlugin
 
 agent_react_number_guesser = LlmAgent(
     name="NumberGuesser",
@@ -92,7 +93,7 @@ This block is for the system parser, not the user. It must contain:
 app = App(
     name="agent_react_number_guesser",
     root_agent=agent_react_number_guesser,
-    plugins=[OtelTracingPlugin()],
+    plugins=[OtelTracingPlugin(), StructuredLoggingPlugin()],
     context_cache_config=ContextCacheConfig(
         min_tokens=4096,
         ttl_seconds=600,  # 10 mins for research sessions

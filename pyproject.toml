@@ -11,4 +11,5 @@ dependencies = [
     "opentelemetry-sdk>=1.37.0",
     "pydantic[email]>=2.12.5",
     "ruff>=0.14.10",
+    "structlog>=25.5.0",
 ]
