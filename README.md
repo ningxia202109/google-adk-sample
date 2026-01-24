@@ -2,6 +2,9 @@
 
 Leveraging the Google Agent Development Kit (ADK) to build robust, enterprise-grade, and production-ready AI agent applications.
 
+> [!TIP]
+> This project is built using **Vibe Coding** principles, assisted by [Cline](https://cline.bot/). It leverages the [Memory Bank Protocol](docs/engineering-constitution-v3-memory-bank.md) to ensure persistent, high-context agentic engineering.
+
 ## Index
 
 - [Agents](#agents)
