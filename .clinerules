@@ -35,6 +35,7 @@ I am a Memory Bank aware Agent. My context source of truth is the `memory-bank/`
 - **Linting/Formatting**: Use `uv run ruff`.
 - **Package Manager**: `uv`.
 - **Quality**: No placeholders; write complete, production-ready code.
+- **Testing**: Create unit tests for all Python functions and tools (not for agents themselves).
 
 # Prompt Engineering Standards
 - **Prompt as Code**: Treat prompts/agent instructions as production code—version controlled and modular.
@@ -46,5 +47,7 @@ I am a Memory Bank aware Agent. My context source of truth is the `memory-bank/`
 # Workflow Commands
 - **Dependency Management**: `uv sync` to sync, `uv add <pkg>` to add.
 - **Linting**: `uv run ruff check --fix <path>`
-- **Testing**: `python -m unittest <test_file.py>` or `./start.sh` for FastAPI.
+- **Testing**: `uv run pytest` for unit tests, `./start.sh` for integration tests (FastAPI).
+
 - **Agent Execution**: `adk run <agent_file.py>`
+- **Version Control**: Never commit or push changes without explicit user permission.
