@@ -48,3 +48,4 @@ I am a Memory Bank aware Agent. My context source of truth is the `memory-bank/`
 - **Linting**: `uv run ruff check --fix <path>`
 - **Testing**: `python -m unittest <test_file.py>` or `./start.sh` for FastAPI.
 - **Agent Execution**: `adk run <agent_file.py>`
+- **Version Control**: Never commit or push changes without explicit user permission.
