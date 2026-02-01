@@ -8,7 +8,10 @@ Finalizing the Memory Bank initialization and verification.
 - [x] Created `memory-bank/` directory with all core files.
 - [x] Verified Memory Bank protocol via smoke test on `smoke-test-memory-bank` branch.
 - [x] Implemented structured logging in `NumberGuesser` agent using `structlog` and a custom ADK plugin.
-- [x] Created and verified unit tests for `StructuredLoggingPlugin`.
+- [x] Fixed `AttributeError: 'InvocationContext' object has no attribute 'correlation_id'` in `StructuredLoggingPlugin` by using defensive `getattr()`.
+- [x] Fixed "unknown" `agent_name` and `correlation_id` in logs by correctly mapping `correlation_id` to `invocation_id` and `agent_name` to `invocation_context.agent.name`.
+- [x] Updated and verified unit tests for `StructuredLoggingPlugin`.
+- [x] Added new clinerule for reviewing dependency source code when unclear about usage.
 
 ## Active Decisions
 - Adopting the 4-layer architecture guideline from `docs/adk-system-infrastructure-design-guideline.md` as a core system pattern.

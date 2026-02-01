@@ -19,6 +19,8 @@ The project is in an "Initial Reference" state, demonstrating multiple agent pat
 - [x] Initialize `memory-bank/` core files.
 - [x] Document system patterns and tech stack.
 - [x] Implement structured logging (structlog) in NumberGuesser agent.
+- [x] Resolve `correlation_id` attribute error in `StructuredLoggingPlugin`.
+- [x] Fix "unknown" `agent_name` and `correlation_id` in structured logs by correctly accessing `InvocationContext` and `BaseAgent` attributes.
 
 ## Known Issues
 - Requires external API keys for full agent execution.
