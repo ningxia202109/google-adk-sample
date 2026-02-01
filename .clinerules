@@ -28,6 +28,7 @@ I am a Memory Bank aware Agent. My context source of truth is the `memory-bank/`
 - **Composition over Inheritance**: Use plugins and component-based agent definitions.
 
 # Tech Stack & Quality Assurance
+- **Source of Truth for Dependencies**: If unclear about dependency usage or internal structures (e.g., ADK internal classes), review the installed source code in `./.venv/lib64/python3.12/site-packages` or `./.venv/lib/python3.12/site-packages`.
 - **Language**: Python >= 3.11.
 - **Frameworks**: Google ADK, FastAPI, LiteLLM.
 - **Data Validation**: Pydantic V2 for all data schemas.

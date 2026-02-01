@@ -32,23 +32,37 @@ class StructuredLoggingPlugin(BasePlugin):
         self, *, invocation_context: InvocationContext
     ) -> Optional[Any]:
         # Bind correlation_id to the logger context
-        correlation_id = invocation_context.correlation_id or "unknown"
+        # In ADK, correlation_id is available as invocation_id in InvocationContext
+        correlation_id = getattr(invocation_context, "invocation_id", "unknown")
         structlog.contextvars.bind_contextvars(correlation_id=correlation_id)
-        
+
+        # In ADK, agent_name is available via invocation_context.agent.name
+        agent_name = "unknown"
+        if hasattr(invocation_context, "agent") and hasattr(
+            invocation_context.agent, "name"
+        ):
+            agent_name = invocation_context.agent.name
+
         self.logger.info(
             "agent_run_started",
-            agent_name=invocation_context.agent_name,
-            correlation_id=correlation_id
+            agent_name=agent_name,
+            correlation_id=correlation_id,
         )
         return None
 
-    async def after_run_callback(
-        self, *, invocation_context: InvocationContext
-    ) -> None:
+    async def after_run_callback(self, *, invocation_context: InvocationContext) -> None:
+        correlation_id = getattr(invocation_context, "invocation_id", "unknown")
+
+        agent_name = "unknown"
+        if hasattr(invocation_context, "agent") and hasattr(
+            invocation_context.agent, "name"
+        ):
+            agent_name = invocation_context.agent.name
+
         self.logger.info(
             "agent_run_completed",
-            agent_name=invocation_context.agent_name,
-            correlation_id=invocation_context.correlation_id or "unknown"
+            agent_name=agent_name,
+            correlation_id=correlation_id,
         )
         # Clear contextvars after run
         structlog.contextvars.clear_contextvars()
