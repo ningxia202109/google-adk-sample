@@ -11,6 +11,7 @@ Leveraging the Google Agent Development Kit (ADK) to build robust, enterprise-gr
   - [NumberGuesser Agent](#numberguesser-agent)
   - [Progressive Disclosure Agent](#progressive-disclosure-agent)
   - [PD Troubleshooting Agent](#pd-troubleshooting-agent)
+- [Agent with Dynamic Skills (Claude-style PoC)](#agent-with-dynamic-skills-claude-style-poc)
 - [Services](#services)
   - [Dummy FastAPI Service](#dummy-fastapi-service)
 - [Setup](#setup)
@@ -76,6 +77,20 @@ This agent demonstrates how to build enterprise-grade troubleshooting workflows 
 
 **Location**: `src/agent_pd_troubleshooting/`  
 **Quick Start**: See [Agent README](src/agent_pd_troubleshooting/README.md) for detailed instructions.
+
+### Agent with Dynamic Skills (Claude-style PoC)
+
+A groundbreaking PoC that demonstrates how to implement **dynamic, markdown-driven specialized capabilities** within the Google ADK, inspired by Claude agent skills:
+
+-   **Skill Discovery**: Uses a `BM25` hybrid search registry to find relevant skills from markdown files at runtime.
+-   **Dynamic Context**: Injects specialized natural language guidance into the agent's instructions only when a skill is "loaded".
+-   **Dynamic Tooling**: Leverages a `DynamicSkillToolset` to selectively inject API tools (e.g., User/Team management) based on the active skill state.
+-   **Lifecycle Management**: Implements a clean load/off-load pattern, ensuring the agent remains focused and returns to a base state after task completion.
+
+This agent demonstrates the power of ADK's extension points (`InstructionProvider`, `BaseToolset`) to create modular, extensible AI architectures.
+
+**Location**: `src/agent_with_skills_register_user/`  
+**Quick Start**: See [Agent README](src/agent_with_skills_register_user/README.md) for detailed instructions.
 
 ## Services
 
