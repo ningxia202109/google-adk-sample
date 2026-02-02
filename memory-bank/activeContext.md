@@ -8,12 +8,13 @@ Implementing the Claude-style Agent Skills PoC in Google ADK.
 - [x] Created `memory-bank/` directory with all core files.
 - [x] Verified Memory Bank protocol via smoke test on `smoke-test-memory-bank` branch.
 - [x] Implemented structured logging in `NumberGuesser` agent.
-- [x] Scaffolding for `agent_with_skills_register_user` completed.
-- [x] Implemented `SkillRegistry` for markdown skill parsing.
-- [x] Implemented `DynamicSkillToolset` for runtime tool injection.
-- [x] Created specialized skills for user registration and team assignment using the required markdown format.
-- [x] Implemented dynamic instruction provider for skill content injection.
-- [x] Verified `SkillRegistry` with unit tests.
+- [x] **Claude-style Agent Skills PoC**:
+    - [x] Implemented `AgentSkillRegistry` with BM25 hybrid search.
+    - [x] Implemented `AgentToolRegistry` for decorator-based tool management.
+    - [x] Developed `DynamicSkillToolset` for runtime tool injection based on session state.
+    - [x] Created `InstructionProvider` for dynamic prompt augmentation.
+    - [x] Integrated with `dummy_fastapi_service` for user/team management.
+    - [x] Documented architecture and lifecycle in `src/agent_with_skills_register_user/README.md`.
 
 ## Active Decisions
 - Adopting the 4-layer architecture guideline from `docs/adk-system-infrastructure-design-guideline.md` as a core system pattern.
