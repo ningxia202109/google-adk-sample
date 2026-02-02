@@ -124,7 +124,8 @@ async def complete_skill(tool_context: Any) -> str:
     if not active_skill:
         return "No skill is currently active."
     
-    del tool_context.state["active_skill"]
+    # ADK State does not support __delitem__, so we set it to None or empty
+    tool_context.state["active_skill"] = None
     return f"Skill '{active_skill}' has been off-loaded. I have returned to my base state."
 
 # --- Dynamic Toolset ---
@@ -145,13 +146,13 @@ class DynamicSkillToolset(BaseToolset):
             return tools
 
         # Add tools based on active skill
-        if active_skill_name == "skill_register_user":
+        if active_skill_name == "register user":
             tools.extend([
                 FunctionTool(get_users),
                 FunctionTool(create_user),
                 FunctionTool(update_user)
             ])
-        elif active_skill_name == "skill_assign_user_to_team":
+        elif active_skill_name == "assign user to team":
             tools.extend([
                 FunctionTool(get_users), # Often needed to find user_id
                 FunctionTool(get_teams),

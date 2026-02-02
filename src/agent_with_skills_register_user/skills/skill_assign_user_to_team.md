@@ -1,5 +1,5 @@
 ---
-name: skill_assign_user_to_team
+name: assign user to team
 description: Specialized skill for assigning existing users to teams based on compatibility.
 ---
 

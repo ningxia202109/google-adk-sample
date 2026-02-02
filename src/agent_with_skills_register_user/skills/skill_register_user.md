@@ -1,5 +1,5 @@
 ---
-name: skill_register_user
+name: register user
 description: Specialized skill for registering and managing users in the system.
 ---
 
