@@ -1,17 +1,19 @@
 # Active Context
 
 ## Current Task
-Finalizing the Memory Bank initialization and verification.
+Implementing the Claude-style Agent Skills PoC in Google ADK.
 
 ## Status
 - [x] Initialized `.clinerules` with identity and protocol definitions.
 - [x] Created `memory-bank/` directory with all core files.
 - [x] Verified Memory Bank protocol via smoke test on `smoke-test-memory-bank` branch.
-- [x] Implemented structured logging in `NumberGuesser` agent using `structlog` and a custom ADK plugin.
-- [x] Fixed `AttributeError: 'InvocationContext' object has no attribute 'correlation_id'` in `StructuredLoggingPlugin` by using defensive `getattr()`.
-- [x] Fixed "unknown" `agent_name` and `correlation_id` in logs by correctly mapping `correlation_id` to `invocation_id` and `agent_name` to `invocation_context.agent.name`.
-- [x] Updated and verified unit tests for `StructuredLoggingPlugin`.
-- [x] Added new clinerule for reviewing dependency source code when unclear about usage.
+- [x] Implemented structured logging in `NumberGuesser` agent.
+- [x] Scaffolding for `agent_with_skills_register_user` completed.
+- [x] Implemented `SkillRegistry` for markdown skill parsing.
+- [x] Implemented `DynamicSkillToolset` for runtime tool injection.
+- [x] Created specialized skills for user registration and team assignment using the required markdown format.
+- [x] Implemented dynamic instruction provider for skill content injection.
+- [x] Verified `SkillRegistry` with unit tests.
 
 ## Active Decisions
 - Adopting the 4-layer architecture guideline from `docs/adk-system-infrastructure-design-guideline.md` as a core system pattern.
