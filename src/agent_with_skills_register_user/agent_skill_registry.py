@@ -7,6 +7,7 @@ from rank_bm25 import BM25Okapi
 class SkillMetadata(BaseModel):
     name: str
     description: str
+    tools: List[str] = []
 
 class Skill(BaseModel):
     metadata: SkillMetadata
@@ -71,8 +72,17 @@ class SkillRegistry:
         if "name" not in metadata or "description" not in metadata:
             return None
 
+        # Parse tools if present, handle comma-separated list
+        tools_list = []
+        if "tools" in metadata:
+            tools_list = [t.strip() for t in metadata["tools"].split(",") if t.strip()]
+
         return Skill(
-            metadata=SkillMetadata(name=metadata["name"], description=metadata["description"]),
+            metadata=SkillMetadata(
+                name=metadata["name"], 
+                description=metadata["description"],
+                tools=tools_list
+            ),
             content=body,
             path=filepath
         )

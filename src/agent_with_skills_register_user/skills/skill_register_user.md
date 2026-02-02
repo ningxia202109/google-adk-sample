@@ -1,6 +1,7 @@
 ---
 name: register user
 description: Specialized skill for registering and managing users in the system.
+tools: get_users, create_user, update_user
 ---
 
 # Register User Skill

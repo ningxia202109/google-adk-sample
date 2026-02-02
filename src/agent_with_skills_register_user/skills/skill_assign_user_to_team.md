@@ -1,6 +1,7 @@
 ---
 name: assign user to team
 description: Specialized skill for assigning existing users to teams based on compatibility.
+tools: get_users, get_teams, add_user_to_team
 ---
 
 # Assign User to Team Skill

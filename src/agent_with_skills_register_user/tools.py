@@ -6,8 +6,9 @@ from google.adk.tools import FunctionTool, BaseTool
 from google.adk.tools.base_toolset import BaseToolset
 from google.adk.agents.readonly_context import ReadonlyContext
 
-# Registry for skill discovery
+# Registry for skill discovery and tool registration
 from .agent_skill_registry import SkillRegistry
+from .agent_tool_registry import tool_registry
 
 SKILLS_DIR = os.path.join(os.path.dirname(__file__), "skills")
 registry = SkillRegistry(SKILLS_DIR)
@@ -16,6 +17,7 @@ BASE_URL = "http://127.0.0.1:6060"
 
 # --- API Tools for Users ---
 
+@tool_registry.register_tool
 async def get_users() -> str:
     """Fetch all users from the service."""
     try:
@@ -26,6 +28,7 @@ async def get_users() -> str:
     except Exception as e:
         return f"Error fetching users: {str(e)}"
 
+@tool_registry.register_tool
 async def create_user(name: str, email: str, habits: List[str] = []) -> str:
     """Create a new user.
     
@@ -43,6 +46,7 @@ async def create_user(name: str, email: str, habits: List[str] = []) -> str:
     except Exception as e:
         return f"Error creating user: {str(e)}"
 
+@tool_registry.register_tool
 async def update_user(user_id: int, name: Optional[str] = None, email: Optional[str] = None, habits: Optional[List[str]] = None) -> str:
     """Update an existing user.
     
@@ -66,6 +70,7 @@ async def update_user(user_id: int, name: Optional[str] = None, email: Optional[
 
 # --- API Tools for Teams ---
 
+@tool_registry.register_tool
 async def get_teams() -> str:
     """Fetch all teams from the service."""
     try:
@@ -76,6 +81,7 @@ async def get_teams() -> str:
     except Exception as e:
         return f"Error fetching teams: {str(e)}"
 
+@tool_registry.register_tool
 async def add_user_to_team(team_name: str, user_id: int) -> str:
     """Add a user to a team.
     
@@ -145,18 +151,10 @@ class DynamicSkillToolset(BaseToolset):
         if not active_skill_name:
             return tools
 
-        # Add tools based on active skill
-        if active_skill_name == "register user":
-            tools.extend([
-                FunctionTool(get_users),
-                FunctionTool(create_user),
-                FunctionTool(update_user)
-            ])
-        elif active_skill_name == "assign user to team":
-            tools.extend([
-                FunctionTool(get_users), # Often needed to find user_id
-                FunctionTool(get_teams),
-                FunctionTool(add_user_to_team)
-            ])
+        skill = registry.get_skill(active_skill_name)
+        if skill and skill.metadata.tools:
+            # Dynamically load tools requested by the skill from the tool registry
+            dynamic_tools = tool_registry.get_tools(skill.metadata.tools)
+            tools.extend(dynamic_tools)
             
         return tools
