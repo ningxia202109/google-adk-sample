@@ -1,4 +1,4 @@
-from typing import Dict, Callable, Any, List
+from typing import Dict, Callable, Any, List, Optional
 from google.adk.tools import FunctionTool, BaseTool
 
 class ToolRegistry:
