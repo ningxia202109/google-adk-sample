@@ -2,7 +2,8 @@ import httpx
 import json
 import os
 from typing import List, Optional, Any
-from google.adk.tools import BaseToolset, FunctionTool, BaseTool
+from google.adk.tools import FunctionTool, BaseTool
+from google.adk.tools.base_toolset import BaseToolset
 from google.adk.agents.readonly_context import ReadonlyContext
 
 # Registry for skill discovery
